@@ -9,320 +9,170 @@ namespace LinqDemo
 
 
         {
+            // AGGREGATION METHODS
 
-            Console.WriteLine("--------------WHERE-------------------");
-            // Data source
-            List<string> my_list = new List<string>()
-            {
-                    "This is my Dog",
-                    "Name of my Dog is Robin",
-                    "This is my Cat",
-                    "Name of the cat is Mewmew"
-            };
-
-            // Creating LINQ Query
-            IEnumerable<string> res = from l in my_list
-                                      where l.Contains("my")
-                                      select l;
-
-            // Executing LINQ Query
-            foreach (string q in res)
-            {
-                Console.WriteLine(q);
-            }
-
-
-            // OFTYPE => Used to show records of a particular type.
-            Console.WriteLine("--------------OF Type-------------------");
-            var fruits = new List<object?>
-                {
-                "Mango",
-                    "Orange",
-                    null,
-                    "Apple",
-                    3.0,
-                    "Banana"
-                }
-            ;
-
-            // Apply OfType() to the ArrayList.
-            IEnumerable<string> ofTypeQuery = fruits.OfType<string>();
-
-            Console.WriteLine("Elements of type 'string' are:");
-            foreach (string fruit in ofTypeQuery)
-            {
-                Console.WriteLine(fruit);
-            }
-
-
-            // ORDERBY: Sorts elements in ascending or descending order
-            Console.WriteLine("--------------ORDER BY-------------------");
-
-            var names = new List<string> { "John", "Alice", "Bob" };
-            var sortedNames = names.OrderBy(n => n);
-
-            foreach (var name in sortedNames)
-                Console.WriteLine(name);
-
-            List<int> intList = new List<int>() {
-                1, 7, 99, 57, 77, 98
-            };
-
-            IEnumerable<int> descendingSortedList = from i in intList where i > 10 orderby i descending select i;
-            foreach (var name in descendingSortedList)
-                Console.WriteLine(name);
-
-
-            // THEN BY: Performs secondary sorting.
-            Console.WriteLine("--------------THEN BY-------------------");
-            List<(string Name, int Age)> people = new List<(string Name, int Age)>()
-                    {
-                        ("John", 30),
-                        ("Alice", 25),
-                        ("Bob", 30),
-                        ("Charlie", 25)
-                    };
-
-            var sortedPeople = people.OrderBy(p => p.Age).ThenBy(p => p.Name);
+            int[] numbers = { 1, 2, 3, 4 };
 
-            foreach (var person in sortedPeople)
-                Console.WriteLine($"{person.Name} - {person.Age}");
+            // Aggregate 
+            Console.WriteLine("------------- Aggregate -------------");
+            int aggResult = numbers.Aggregate((a, b) => a * b);
+            Console.WriteLine("aggResult " + aggResult);
 
-            // GROUP BY: Groups elements based on a key.
+            // Average - Computes the average of a sequence of numeric values.
+            Console.WriteLine("----------- Average --------------");
+            double avg = numbers.Average(); // (1 + 2 + 3 + 4) / 4 = 2.5
+            Console.WriteLine("avg : " + avg);
 
-            Console.WriteLine("--------------GROUP BY-------------------");
-            var numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8 };
-            var groups = numbers.GroupBy(n => n % 2 == 0 ? "Even" : "Odd");
+            // Count - Returns the number of elements in a sequence.
+            Console.WriteLine("-------- Count -------");
+            int count = numbers.Count(); // 4
+            Console.WriteLine("count : " + count);
 
-            foreach (var group in groups)
-            {
-                Console.WriteLine(group.Key + ": " + string.Join(", ", group));
-            }
+            // Max - Returns the maximum value in a sequence.
+            Console.WriteLine("--------- Max ---------");
+            int max = numbers.Max(); // 4
+            Console.WriteLine("max : " + max);
 
-            // TO LOOKUP: Similar to GroupBy, but returns a Lookup, which allows multiple lookups.
+            // Sum - Computes the sum of a sequence of numeric values.
+            Console.WriteLine("--------- Sum ----------");
+            int sum = numbers.Sum(); // 1 + 2 + 3 + 4 = 10
+            Console.WriteLine("sum : " + sum);
 
-            Console.WriteLine("--------------TO LOOKUP-------------------");
 
-            var words = new List<string> { "apple", "banana", "apricot", "blueberry" };
-            var lookup = words.ToLookup(w => w[0]); // Groups by first letter
+            // ELEMENTS OPERATORS
 
-            foreach (var group in lookup)
-            {
-                Console.WriteLine(group.Key + ": " + string.Join(", ", group));
-            }
+            // ElementAt - Returns the element at a specified index.
+            Console.WriteLine("---------- ElementAt ----------");
 
-            // JOIN: Performs an inner join between two sequences.
+            int element = numbers.ElementAt(2); // 3 (0-based index)
+            Console.WriteLine("elementAt : " + element);
 
-            Console.WriteLine("--------------JOIN-------------------");
-            var students = new List<(int Id, string Name)>
-                {
-                    (1, "John"),
-                    (2, "Alice"),
-                    (3, "Bob")
-                };
+            // ElementAtOrDefault - Returns the element at a specified index or default if out of range.
+            Console.WriteLine("------- ElementAtOrDefault --------");
+            int elementOrDefault = numbers.ElementAtOrDefault(10); // 0 (default for int)
+            Console.WriteLine("elementOrDefault : " + elementOrDefault);
 
-            var scores = new List<(int StudentId, int Score)>
-                {
-                    (1, 90),
-                    (2, 85),
-                    (1, 95)
-                };
+            // First - Returns the first element; throws if the sequence is empty.
+            Console.WriteLine("--------- First ----------");
+            int first = numbers.First(); // 1
+            Console.WriteLine("first : " + first);
 
-            var studentScores = students.Join(scores,
-                student => student.Id,
-                score => score.StudentId,
-                (student, score) => new { student.Name, score.Score });
+            // FirstOrDefault - Returns the first element or default if empty.
+            Console.WriteLine("--------- FirstOrDefault ----------");
+            int firstOrDefault = numbers.FirstOrDefault(); // 1 (or default if empty)
+            Console.WriteLine("firstOrDefault : " + firstOrDefault);
 
-            foreach (var record in studentScores)
-                Console.WriteLine($"{record.Name}: {record.Score}");
+            // Last - Returns the last element; throws if empty.
+            Console.WriteLine("--------- Last ---------");
+            int last = numbers.Last(); // 4
+            Console.WriteLine("last : " + last);
 
+            // LastOrDefault - Returns the last element or default if empty.
+            Console.WriteLine("--------- LastOrDefault ----------");
+            int lastOrDefault = numbers.LastOrDefault(); // 4 (or default if empty)
+            Console.WriteLine("lastOrDefault : " + lastOrDefault);
 
-            // GROUP JOIN: Performs a grouped join, grouping matching elements.
+            // Single - Returns a single element; throws if there is more than one or none.
+            Console.WriteLine("---------- Single ----------");
+            int[] singleArray = { 42 };
+            int single = singleArray.Single(); // 42
+            Console.WriteLine("single : " + single);
 
-            Console.WriteLine("--------------GROUP JOIN-------------------");
+            // SingleOrDefault - Returns a single element or default if empty; throws if multiple.
+            Console.WriteLine("-----------  SingleOrDefault ----------");
+            int singleOrDefault = singleArray.SingleOrDefault(); // 42
+            Console.WriteLine("singleOrDefault : " + singleOrDefault);
 
-            var categories = new List<(int Id, string Category)>
-                {
-                    (1, "Fruits"),
-                    (2, "Vegetables")
-                };
 
-            var products = new List<(string Name, int CategoryId)>
-                {
-                    ("Apple", 1),
-                    ("Carrot", 2),
-                    ("Banana", 1),
-                    ("Broccoli", 2)
-                };
+            // SET OPERATORS
 
-            var grouped = categories.GroupJoin(products,
-                category => category.Id,
-                product => product.CategoryId,
-                (category, products) => new { category.Category, Products = products });
+            // SequenceEqual - Determines whether two sequences are equal.
+            Console.WriteLine("---------- SequenceEqual -----------");
+            int[] seq1 = { 1, 2, 3 };
+            int[] seq2 = { 1, 2, 3 };
+            bool isEqual = seq1.SequenceEqual(seq2); // true
+            Console.WriteLine("isEqual : " + isEqual);
 
-            foreach (var group in grouped)
-            {
-                Console.WriteLine(group.Category + ": " + string.Join(", ", group.Products.Select(p => p.Name)));
-            }
+            // Concat - Concatenates two sequences.
+            Console.WriteLine("--------- Concat -----------");
+            var concatenated = seq1.Concat(new int[] { 4, 5 }); // {1, 2, 3, 4, 5}
+            Console.WriteLine("concat : " + concatenated);
 
-            // SELECT: Projects each element into a new form.
+            // DefaultIfEmpty - Returns the sequence or a default value if empty.
+            Console.WriteLine("----------- DefaultIfEmpty -----------");
+            int[] emptyArray = { };
+            var result = emptyArray.DefaultIfEmpty(100); // {100}
+            Console.WriteLine("defaultIfEmpty result : " + result);
 
-            Console.WriteLine("--------------SELECT-------------------");
 
-            var numList = new List<int> { 1, 2, 3 };
-            var squares = numList.Select(n => n * n);
 
-            foreach (var square in squares)
-                Console.WriteLine(square);
 
-            // ALL: Checks if all elements satisfies a condition
+            // GENERATION METHODS
 
-            Console.WriteLine("--------------ALL-------------------");
+            // Empty - Returns an empty sequence.
+            Console.WriteLine("----------- Empty ----------");
+            var emptySequence = Enumerable.Empty<int>(); // No elements
+            Console.WriteLine(emptySequence);
 
-            var numList1 = new List<int> { 2, 4, 6 };
-            bool areAllEven = numList1.All(n => n % 2 == 0);
-            Console.WriteLine(areAllEven);
 
-            // ANY: Checks if any elements satisfies a condition
+            // Range - Generates a sequence of numbers within a range.
+            Console.WriteLine("-------- Range ---------");
+            var range = Enumerable.Range(1, 5); // {1, 2, 3, 4, 5}
+            Console.WriteLine("range : " + range);
 
-            Console.WriteLine("--------------ANY-------------------");
+            // Repeat - Repeats an element multiple times.
+            Console.WriteLine("---------- Repeat ----------");
+            var repeated = Enumerable.Repeat("Hello", 3); // {"Hello", "Hello", "Hello"}
+            Console.WriteLine("repeated : " + repeated);
 
-            var numList2 = new List<int> { 1, 3, 5 };
-            bool hasEven = numList2.Any(n => n % 2 == 0);
-            Console.WriteLine(hasEven);
 
-            // CONTAINS: Checks if a sequence contains a specified element.
-            Console.WriteLine("--------------CONTAINS-------------------");
-            var numList3 = new List<int> { 1, 2, 3, 4, 5 };
-            bool containsThree = numList3.Contains(3);
-            Console.WriteLine(containsThree);
+            // SET OPERATIONS
 
+            // Distinct - Removes duplicate values.
+            Console.WriteLine("----------- Distinct -----------");
+            int[] values = { 1, 2, 2, 3 };
+            var distinctValues = values.Distinct(); // {1, 2, 3}
+            Console.WriteLine("distinct : " + distinctValues);
 
+            // Except - Returns elements from the first sequence that are not in the second.
+            Console.WriteLine("----------- Except ------------");
+            var except = new int[] { 1, 2, 3, 4 }.Except(new int[] { 3, 4 }); // {1, 2}
+            Console.WriteLine("except : " + except);
 
 
-            // Where,OfType, OrderBy, ThenBy, GroupBy, ToLookup, Join, GroupJoin, Select, 
-            //All, Any, Contains for tabular data. 
+            // Intersect - Returns common elements from both sequences.
+            Console.WriteLine("---------- intersect ----------");
+            var intersect = new int[] { 1, 2, 3 }.Intersect(new int[] { 2, 3, 4 }); // {2, 3}
+            Console.WriteLine("intersect : " + intersect);
 
-            var employees = new List<Employee>
-            {
-                new Employee { EmployeeID = 1, Name = "Alice", Age = 30, DepartmentID = 1, Salary = 50000 },
-                new Employee { EmployeeID = 2, Name = "Bob", Age = 25, DepartmentID = 2, Salary = 45000 },
-                new Employee { EmployeeID = 3, Name = "Charlie", Age = 35, DepartmentID = 1, Salary = 60000 },
-                new Employee { EmployeeID = 4, Name = "David", Age = 28, DepartmentID = 3, Salary = 40000 },
-                new Employee { EmployeeID = 5, Name = "Eve", Age = 40, DepartmentID = 2, Salary = 70000 }
-            };
+            // Union - Returns unique elements from both sequences.
+            Console.WriteLine("------------- Union ------------");
+            var union = new int[] { 1, 2, 3 }.Union(new int[] { 3, 4, 5 }); // {1, 2, 3, 4, 5}
+            Console.WriteLine("union : " + union);
 
-            // WHERE : Filtering Employees Above 30
-            Console.WriteLine("------- WHERE : Filtering Employees Above 30 ------");
-            var seniorEmployees = employees.Where(e => e.Age > 30);
 
-            foreach (var emp in seniorEmployees)
-                Console.WriteLine(emp.Name);
+            // PARTITIONING METHODS
 
-            // OfType : Filtering Only Numeric Data from Mixed List
-            Console.WriteLine("-------- OfType : Filtering Only Numeric Data from Mixed List ------");
-            var mixedData = new List<object> { "Alice", 25, 30, "Bob", 40, 35.5 };
-            var numericData = mixedData.OfType<int>();
+            // Skip - Skips a specified number of elements.
+            Console.WriteLine("-------------- Skip --------------");
+            var skipped = numbers.Skip(2); // {3, 4}
+            Console.WriteLine("skip : " + skipped);
 
-            foreach (var num in numericData)
-                Console.WriteLine(num);
+            // SkipWhile - Skips elements while a condition is met.
+            Console.WriteLine("--------------- Skip While ----------------");
+            var skipWhile = numbers.SkipWhile(n => n < 3); // {3, 4}
+            Console.WriteLine("skip while : " + skipWhile);
 
-            // OrderBy - Sorting Employees by Salary (Ascending)
-            Console.WriteLine("---------- OrderBy - Sorting Employees by Salary (Ascending) ---------");
-            var sortedEmployees = employees.OrderBy(e => e.Salary);
+            // Take - Takes a specified number of elements.
+            Console.WriteLine("------------- Take ----------");
+            var taken = numbers.Take(2); // {1, 2}
+            Console.WriteLine("take : " + taken);
 
-            foreach (var emp in sortedEmployees)
-                Console.WriteLine($"{emp.Name} - {emp.Salary}");
 
-            // ThenBy - Sorting Employees by Department and Then Salary
-            Console.WriteLine("--------- ThenBy - Sorting Employees by Department and Then Salary -------");
-            var sortedEmployeesThenBy = employees.OrderBy(e => e.DepartmentID).ThenBy(e => e.Salary);
-
-            foreach (var emp in sortedEmployeesThenBy)
-                Console.WriteLine($"{emp.Name} - {emp.DepartmentID} - {emp.Salary}");
-
-            // GroupBy - Group Employees by Department
-            Console.WriteLine("------- GroupBy - Group Employees by Department ---------");
-            var groupedEmployees = employees.GroupBy(e => e.DepartmentID);
-
-            foreach (var group in groupedEmployees)
-            {
-                Console.WriteLine($"Department {group.Key}:");
-                foreach (var emp in group)
-                    Console.WriteLine($"  {emp.Name}");
-            }
-
-            // ToLookup - Creating Lookup for Quick Access
-            Console.WriteLine("----------- ToLookup - Creating Lookup for Quick Access -------");
-            var employeeLookup = employees.ToLookup(e => e.DepartmentID);
-
-            Console.WriteLine("Employees in Department 1:");
-            foreach (var emp in employeeLookup[1])
-                Console.WriteLine(emp.Name);
-
-            // Join - Joining Employees with Departments
-            var departments = new List<Department>
-            {
-                new Department { DepartmentID = 1, DepartmentName = "HR" },
-                new Department { DepartmentID = 2, DepartmentName = "IT" },
-                new Department { DepartmentID = 3, DepartmentName = "Sales" }
-            };
-
-            var employeeDetails = employees.Join(departments,
-                e => e.DepartmentID,
-                d => d.DepartmentID,
-                (e, d) => new { e.Name, e.Age, e.Salary, d.DepartmentName });
-
-            foreach (var emp in employeeDetails)
-                Console.WriteLine($"{emp.Name} - {emp.DepartmentName} - {emp.Salary}");
-
-
-            // GroupJoin - Group Employees Under Departments
-            Console.WriteLine("------------ GroupJoin - Group Employees Under Departments ---------");
-            var departmentGroups = departments.GroupJoin(employees,
-            d => d.DepartmentID,
-            e => e.DepartmentID,
-            (d, emps) => new { d.DepartmentName, Employees = emps });
-
-            foreach (var group in departmentGroups)
-            {
-                Console.WriteLine($"{group.DepartmentName}:");
-                foreach (var emp in group.Employees)
-                    Console.WriteLine($"  {emp.Name}");
-            }
-
-            // Select - Projecting Employee Names
-            Console.WriteLine("--------- Select - Projecting Employee Names -----------");
-            var employeeNames = employees.Select(e => e.Name);
-
-            foreach (var name in employeeNames)
-                Console.WriteLine(name);
-
-            // All - Checking if All Employees Earn More Than 30,000
-            Console.WriteLine("---------- All - Checking if All Employees Earn More Than 30,000 --------");
-            bool allHighEarners = employees.All(e => e.Salary > 30000);
-            Console.WriteLine(allHighEarners);
-
-
-            // Any - Checking If There Are Any Employees in HR
-            Console.WriteLine("---------- Any - Checking If There Are Any Employees in HR --------");
-            bool hasHREmployees = employees.Any(e => e.DepartmentID == 1);
-            Console.WriteLine(hasHREmployees);
-
-
-            // Contains - Checking If Employee List Contains a Specific Employee
-            Console.WriteLine("------------- Contains - Checking If Employee List Contains a Specific Employee ---------");
-            var checkEmployee = new Employee { EmployeeID = 3, Name = "Charlie", Age = 35, DepartmentID = 1, Salary = 60000 };
-            bool exists = employees.Contains(checkEmployee);
-            Console.WriteLine(exists);
-
-
-
-
-
-
-
-
+            // TakeWhile - Takes elements while a condition is met.
+            Console.WriteLine("------------- Take While -------------");
+            var takeWhile = numbers.TakeWhile(n => n < 3); // {1, 2}
+            Console.WriteLine("take while : " + takeWhile);
 
 
 
@@ -332,20 +182,4 @@ namespace LinqDemo
 
         }
     }
-
-    public class Employee
-    {
-        public int EmployeeID { get; set; }
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public int DepartmentID { get; set; }
-        public decimal Salary { get; set; }
-    }
-
-    public class Department
-    {
-        public int DepartmentID { get; set; }
-        public string DepartmentName { get; set; }
-    }
-
 }
