@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 
 namespace LinqDemo
 {
@@ -9,176 +10,140 @@ namespace LinqDemo
 
 
         {
-            // AGGREGATION METHODS
+            // CONVERSION OPEARTORS
 
-            int[] numbers = { 1, 2, 3, 4 };
-
-            // Aggregate 
-            Console.WriteLine("------------- Aggregate -------------");
-            int aggResult = numbers.Aggregate((a, b) => a * b);
-            Console.WriteLine("aggResult " + aggResult);
-
-            // Average - Computes the average of a sequence of numeric values.
-            Console.WriteLine("----------- Average --------------");
-            double avg = numbers.Average(); // (1 + 2 + 3 + 4) / 4 = 2.5
-            Console.WriteLine("avg : " + avg);
-
-            // Count - Returns the number of elements in a sequence.
-            Console.WriteLine("-------- Count -------");
-            int count = numbers.Count(); // 4
-            Console.WriteLine("count : " + count);
-
-            // Max - Returns the maximum value in a sequence.
-            Console.WriteLine("--------- Max ---------");
-            int max = numbers.Max(); // 4
-            Console.WriteLine("max : " + max);
-
-            // Sum - Computes the sum of a sequence of numeric values.
-            Console.WriteLine("--------- Sum ----------");
-            int sum = numbers.Sum(); // 1 + 2 + 3 + 4 = 10
-            Console.WriteLine("sum : " + sum);
+            // 1. AsEnumerable - Converts a list to IEnumerable<T> to enable LINQ queries.
+            List<int> list = new List<int> { 1, 2, 3 };
+            IEnumerable<int> enumerable = list.AsEnumerable();
 
 
-            // ELEMENTS OPERATORS
+            // 2. ToList - Converts a sequence to a List<T>.
+            var numbers = Enumerable.Range(1, 5);
+            List<int> listNumbers = numbers.ToList(); // {1, 2, 3, 4, 5}
 
-            // ElementAt - Returns the element at a specified index.
-            Console.WriteLine("---------- ElementAt ----------");
+            for (int i = 0; i < listNumbers.Count; i++)
+            {
+                Console.Write(" " + listNumbers[i]);
+            }
 
-            int element = numbers.ElementAt(2); // 3 (0-based index)
-            Console.WriteLine("elementAt : " + element);
+            // 3. ToArray - Converts a sequence to an array.
+            int[] arrayNumbers = numbers.ToArray(); // {1, 2, 3, 4, 5}
 
-            // ElementAtOrDefault - Returns the element at a specified index or default if out of range.
-            Console.WriteLine("------- ElementAtOrDefault --------");
-            int elementOrDefault = numbers.ElementAtOrDefault(10); // 0 (default for int)
-            Console.WriteLine("elementOrDefault : " + elementOrDefault);
+            // 4. ToDictionary - Converts a sequence to a dictionary.
+            var people = new[]
+                {
+                    new { Id = 1, Name = "Alice" },
+                    new { Id = 2, Name = "Bob" }
+                };
+            var dictionary = people.ToDictionary(p => p.Id, p => p.Name);
+            for (int i = 1; i < dictionary.Count + 1; i++)
+            {
+                Console.WriteLine(dictionary[i]);
+            }
 
-            // First - Returns the first element; throws if the sequence is empty.
-            Console.WriteLine("--------- First ----------");
-            int first = numbers.First(); // 1
-            Console.WriteLine("first : " + first);
+            // 5. Cast - Converts elements to a specific type.
+            ArrayList arrayList = new ArrayList { 1, 2, 3 };
+            var casted = arrayList.Cast<int>().ToList(); // {1, 2, 3}
+            for (int i = 0; i < casted.Count; i++)
+            {
+                Console.WriteLine(casted[i]);
+            }
 
-            // FirstOrDefault - Returns the first element or default if empty.
-            Console.WriteLine("--------- FirstOrDefault ----------");
-            int firstOrDefault = numbers.FirstOrDefault(); // 1 (or default if empty)
-            Console.WriteLine("firstOrDefault : " + firstOrDefault);
-
-            // Last - Returns the last element; throws if empty.
-            Console.WriteLine("--------- Last ---------");
-            int last = numbers.Last(); // 4
-            Console.WriteLine("last : " + last);
-
-            // LastOrDefault - Returns the last element or default if empty.
-            Console.WriteLine("--------- LastOrDefault ----------");
-            int lastOrDefault = numbers.LastOrDefault(); // 4 (or default if empty)
-            Console.WriteLine("lastOrDefault : " + lastOrDefault);
-
-            // Single - Returns a single element; throws if there is more than one or none.
-            Console.WriteLine("---------- Single ----------");
-            int[] singleArray = { 42 };
-            int single = singleArray.Single(); // 42
-            Console.WriteLine("single : " + single);
-
-            // SingleOrDefault - Returns a single element or default if empty; throws if multiple.
-            Console.WriteLine("-----------  SingleOrDefault ----------");
-            int singleOrDefault = singleArray.SingleOrDefault(); // 42
-            Console.WriteLine("singleOrDefault : " + singleOrDefault);
-
-
-            // SET OPERATORS
-
-            // SequenceEqual - Determines whether two sequences are equal.
-            Console.WriteLine("---------- SequenceEqual -----------");
-            int[] seq1 = { 1, 2, 3 };
-            int[] seq2 = { 1, 2, 3 };
-            bool isEqual = seq1.SequenceEqual(seq2); // true
-            Console.WriteLine("isEqual : " + isEqual);
-
-            // Concat - Concatenates two sequences.
-            Console.WriteLine("--------- Concat -----------");
-            var concatenated = seq1.Concat(new int[] { 4, 5 }); // {1, 2, 3, 4, 5}
-            Console.WriteLine("concat : " + concatenated);
-
-            // DefaultIfEmpty - Returns the sequence or a default value if empty.
-            Console.WriteLine("----------- DefaultIfEmpty -----------");
-            int[] emptyArray = { };
-            var result = emptyArray.DefaultIfEmpty(100); // {100}
-            Console.WriteLine("defaultIfEmpty result : " + result);
+            // 6. OfType - Filters elements by type.
+            object[] mixed = { 1, "hello", 2, "world" };
+            var numbersOnly = mixed.OfType<int>(); // {1, 2}
+            var stringsOnly = mixed.OfType<string>(); // {"hello", "world"}
+            for (int i = 0; i < mixed.ToList().Count; i++)
+            {
+                Console.WriteLine(mixed.ToList()[i]);
+            }
+            for (int i = 0; i < numbersOnly.ToList().Count; i++)
+            {
+                Console.WriteLine(numbersOnly.ToList()[i]);
+            }
+            for (
+                int i = 0; i < stringsOnly.ToList().Count; i++
+            )
+            {
+                Console.WriteLine(stringsOnly.ToList()[i]);
+            }
 
 
 
+            // The let keyword is used in LINQ to store intermediate calculations within a query.
+            var words = new[] { "apple", "banana", "cherry" };
 
-            // GENERATION METHODS
+            var query = from word in words
+                        let upper = word.ToUpper() // Store uppercase version
+                        where upper.StartsWith("C")
+                        select upper;
 
-            // Empty - Returns an empty sequence.
-            Console.WriteLine("----------- Empty ----------");
-            var emptySequence = Enumerable.Empty<int>(); // No elements
-            Console.WriteLine(emptySequence);
-
-
-            // Range - Generates a sequence of numbers within a range.
-            Console.WriteLine("-------- Range ---------");
-            var range = Enumerable.Range(1, 5); // {1, 2, 3, 4, 5}
-            Console.WriteLine("range : " + range);
-
-            // Repeat - Repeats an element multiple times.
-            Console.WriteLine("---------- Repeat ----------");
-            var repeated = Enumerable.Repeat("Hello", 3); // {"Hello", "Hello", "Hello"}
-            Console.WriteLine("repeated : " + repeated);
+            foreach (var item in query)
+            {
+                Console.WriteLine(item); // Output: BANANA
+            }
 
 
-            // SET OPERATIONS
+            // The into keyword is used to continue a query after a grouping or join.
+            // Example 1: Using into with Grouping
+            var numbers1 = new[] { 1, 2, 3, 4, 5, 6 };
 
-            // Distinct - Removes duplicate values.
-            Console.WriteLine("----------- Distinct -----------");
-            int[] values = { 1, 2, 2, 3 };
-            var distinctValues = values.Distinct(); // {1, 2, 3}
-            Console.WriteLine("distinct : " + distinctValues);
+            var query1 = from n in numbers1
+                         group n by n % 2 into grouped
+                         select new { Key = grouped.Key, Count = grouped.Count() };
 
-            // Except - Returns elements from the first sequence that are not in the second.
-            Console.WriteLine("----------- Except ------------");
-            var except = new int[] { 1, 2, 3, 4 }.Except(new int[] { 3, 4 }); // {1, 2}
-            Console.WriteLine("except : " + except);
+            foreach (var group in query1)
+            {
+                Console.WriteLine($"Key: {group.Key}, Count: {group.Count}");
+            }
 
+            // Example 2: Using into with join
+            var students = new[]
+            {
+                new { Id = 1, Name = "Alice" },
+                new { Id = 2, Name = "Bob" }
+            };
+            var scores = new[]
+            {
+                new { StudentId = 1, Score = 90 },
+                new { StudentId = 2, Score = 85 }
+            };
 
-            // Intersect - Returns common elements from both sequences.
-            Console.WriteLine("---------- intersect ----------");
-            var intersect = new int[] { 1, 2, 3 }.Intersect(new int[] { 2, 3, 4 }); // {2, 3}
-            Console.WriteLine("intersect : " + intersect);
+            var result = from s in students
+                         join sc in scores on s.Id equals sc.StudentId into studentScores
+                         select new { s.Name, Scores = studentScores };
 
-            // Union - Returns unique elements from both sequences.
-            Console.WriteLine("------------- Union ------------");
-            var union = new int[] { 1, 2, 3 }.Union(new int[] { 3, 4, 5 }); // {1, 2, 3, 4, 5}
-            Console.WriteLine("union : " + union);
-
-
-            // PARTITIONING METHODS
-
-            // Skip - Skips a specified number of elements.
-            Console.WriteLine("-------------- Skip --------------");
-            var skipped = numbers.Skip(2); // {3, 4}
-            Console.WriteLine("skip : " + skipped);
-
-            // SkipWhile - Skips elements while a condition is met.
-            Console.WriteLine("--------------- Skip While ----------------");
-            var skipWhile = numbers.SkipWhile(n => n < 3); // {3, 4}
-            Console.WriteLine("skip while : " + skipWhile);
-
-            // Take - Takes a specified number of elements.
-            Console.WriteLine("------------- Take ----------");
-            var taken = numbers.Take(2); // {1, 2}
-            Console.WriteLine("take : " + taken);
+            foreach (var student in result)
+            {
+                Console.WriteLine($"{student.Name}: {string.Join(", ", student.Scores.Select(s => s.Score))}");
+            }
 
 
-            // TakeWhile - Takes elements while a condition is met.
-            Console.WriteLine("------------- Take While -------------");
-            var takeWhile = numbers.TakeWhile(n => n < 3); // {1, 2}
-            Console.WriteLine("take while : " + takeWhile);
+            // Immediate Execution
+            // Query runs and stores results immediately.
+            // Examples: ToList(), ToArray(), Count(), Sum()
+            var numbers = new List<int> { 1, 2, 3, 4, 5 };
+            var result = numbers.Where(n => n > 2).ToList(); // Executed immediately
 
+            numbers.Add(6); // Modifying source does NOT affect `result`
 
+            foreach (var num in result)
+            {
+                Console.WriteLine(num);
+            }
 
+            // Deferred Execution
+            // Query is not executed immediately; it runs when iterated.
+            // Examples: Select, Where, OrderBy, GroupBy
+            var numbers = new List<int> { 1, 2, 3, 4, 5 };
+            var query = numbers.Where(n => n > 2); // Query not executed yet
 
+            numbers.Add(6); // Modifying source
 
-
+            foreach (var num in query)
+            {
+                Console.WriteLine(num);
+            }
 
         }
     }
